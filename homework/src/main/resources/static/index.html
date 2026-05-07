@@ -6,61 +6,69 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Semantic Web Book Recommendations</h1>
-    </header>
-    <nav>
-        <a href="index.html">Upload Data</a>
-        <a href="books.html">Books List</a>
-        <a href="graph.html">RDF Graph Viewer</a>
-    </nav>
-    <div class="container">
-        <h2>Upload RDF/XML Data File</h2>
-        <p>Please select an RDF or OWL file to update the knowledge base.</p>
-        
-        <form id="uploadForm">
-            <input type="file" id="rdfFile" name="file" accept=".rdf, .owl, .xml" required>
-            <br><br>
-            <button type="submit" style="padding: 10px 20px; background: #28a745; color: white; border: none; cursor:pointer;">Upload File</button>
-        </form>
-        
-        <div id="uploadStatus" style="margin-top: 15px; display: none; font-weight: bold;"></div>
-    </div>
+<header>
+    <h1>Semantic Web Book Recommendations</h1>
+</header>
 
-    <script src="js/app.js"></script>
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const fileInput = document.getElementById('rdfFile');
-            const formData = new FormData();
-            formData.append("file", fileInput.files[0]); 
+<nav>
+    <a href="index.html">Upload Data</a>
+    <a href="books.html">Books List</a>
+    <a href="graph.html">RDF Graph Viewer</a>
+</nav>
 
-            const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.style.display = 'block';
-            statusDiv.style.color = '#007bff';
-            statusDiv.innerText = "Uploading...";
+<div class="container">
+    <h2>Upload RDF/XML Data File</h2>
+    <p>Please select an RDF or OWL file to update the knowledge base.</p>
 
-            try {
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData
-                });
+    <form id="uploadForm">
+        <input type="file" id="rdfFile" name="file" accept=".rdf, .owl, .xml" required>
+        <br><br>
+        <button type="submit"
+                style="padding: 10px 20px; background: #28a745; color: white; border: none; cursor:pointer;">
+            Upload File
+        </button>
+    </form>
 
-                if(response.ok) {
-                    statusDiv.style.color = 'green';
-                    statusDiv.innerText = "File successfully uploaded and processed by Jena!";
-                    document.getElementById('uploadForm').reset();
-                } else {
-                    statusDiv.style.color = 'red';
-                    statusDiv.innerText = "Error uploading file. Check backend logs.";
-                }
-            } catch (error) {
-                console.error("Eroare upload:", error);
+    <div id="uploadStatus"
+         style="margin-top: 15px; display: none; font-weight: bold;"></div>
+</div>
+
+<script src="js/app.js"></script>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const fileInput = document.getElementById('rdfFile');
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        const statusDiv = document.getElementById('uploadStatus');
+        statusDiv.style.display = 'block';
+        statusDiv.style.color = '#007bff';
+        statusDiv.innerText = "Uploading...";
+
+        try {
+            const response = await fetch('/api/books/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                statusDiv.style.color = 'green';
+                statusDiv.innerText = "File successfully uploaded!";
+                document.getElementById('uploadForm').reset();
+            } else {
                 statusDiv.style.color = 'red';
-                statusDiv.innerText = "Server connection failed.";
+                statusDiv.innerText = "Upload failed.";
             }
-        });
-    </script>
+
+        } catch (error) {
+            console.error(error);
+            statusDiv.style.color = 'red';
+            statusDiv.innerText = "Server connection failed.";
+        }
+    });
+</script>
 </body>
 </html>

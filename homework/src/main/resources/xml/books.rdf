@@ -1,57 +1,40 @@
-<?xml version="1.0"?>
-
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:ex="http://example.org/book-recommendation#">
-
-    <rdf:Description rdf:about="http://example.org/user/Alice">
-        <rdf:type rdf:resource="http://example.org/book-recommendation#User"/>
-        <ex:name>Alice</ex:name>
-        <ex:readingLevel>Intermediate</ex:readingLevel>
-        <ex:preferredTheme>Science Fiction</ex:preferredTheme>
-    </rdf:Description>
-
-    <rdf:Description rdf:about="http://example.org/user/Bob">
-        <rdf:type rdf:resource="http://example.org/book-recommendation#User"/>
-        <ex:name>Bob</ex:name>
-        <ex:readingLevel>Beginner</ex:readingLevel>
-        <ex:preferredTheme>Mystery</ex:preferredTheme>
-    </rdf:Description>
-
-    <rdf:Description rdf:about="http://example.org/book/Dune">
-        <rdf:type rdf:resource="http://example.org/book-recommendation#Book"/>
-        <ex:title>Dune</ex:title>
-        <ex:author>Frank Herbert</ex:author>
-        <ex:theme>Science Fiction</ex:theme>
-        <ex:theme>Fantasy</ex:theme>
-        <ex:readingLevel>Advanced</ex:readingLevel>
-    </rdf:Description>
-
-    <rdf:Description rdf:about="http://example.org/book/TheSilentPatient">
-        <rdf:type rdf:resource="http://example.org/book-recommendation#Book"/>
-        <ex:title>The Silent Patient</ex:title>
-        <ex:author>Alex Michaelides</ex:author>
-        <ex:theme>Mystery</ex:theme>
-        <ex:theme>Murder</ex:theme>
-        <ex:readingLevel>Intermediate</ex:readingLevel>
-    </rdf:Description>
-
-    <rdf:Description rdf:about="http://example.org/book/HungerGames">
-        <rdf:type rdf:resource="http://example.org/book-recommendation#Book"/>
-        <ex:title>Hunger Games</ex:title>
-        <ex:author>Suzanne Collins</ex:author>
-        <ex:theme>Science Fiction</ex:theme>
-        <ex:theme>Fantasy</ex:theme>
-        <ex:readingLevel>Intermediate</ex:readingLevel>
-    </rdf:Description>
-
-    <rdf:Description rdf:about="http://example.org/book/HarryPotter">
-        <rdf:type rdf:resource="http://example.org/book-recommendation#Book"/>
-        <ex:title>Harry Potter</ex:title>
-        <ex:author>J.K. Rowling</ex:author>
-        <ex:theme>Fantasy</ex:theme>
-        <ex:theme>Adventure</ex:theme>
-        <ex:readingLevel>Beginner</ex:readingLevel>
-    </rdf:Description>
-
+  <ex:User rdf:about="http://example.org/user/Alice">
+    <ex:preferredTheme>Science Fiction</ex:preferredTheme>
+    <ex:readingLevel>Intermediate</ex:readingLevel>
+    <ex:name>Alice</ex:name>
+  </ex:User>
+  <ex:Book rdf:about="http://example.org/book/HarryPotter">
+    <ex:readingLevel>Beginner</ex:readingLevel>
+    <ex:theme>Adventure</ex:theme>
+    <ex:theme>Fantasy</ex:theme>
+    <ex:author>J.K. Rowling</ex:author>
+    <ex:title>Harry Potter</ex:title>
+  </ex:Book>
+  <ex:Book rdf:about="http://example.org/book/HungerGames">
+    <ex:readingLevel>Beginner</ex:readingLevel>
+    <ex:author>Suzanne Collins</ex:author>
+    <ex:title>Hunger Games</ex:title>
+  </ex:Book>
+  <ex:Book rdf:about="http://example.org/book/Dune">
+    <ex:readingLevel>Advanced</ex:readingLevel>
+    <ex:theme>Fantasy</ex:theme>
+    <ex:theme>Science Fiction</ex:theme>
+    <ex:author>Frank Herbert</ex:author>
+    <ex:title>Dune</ex:title>
+  </ex:Book>
+  <ex:Book rdf:about="http://example.org/book/TheSilentPatient">
+    <ex:readingLevel>Intermediate</ex:readingLevel>
+    <ex:theme>Murder</ex:theme>
+    <ex:theme>Mystery</ex:theme>
+    <ex:author>Alex Michaelides</ex:author>
+    <ex:title>The Silent Patient</ex:title>
+  </ex:Book>
+  <ex:User rdf:about="http://example.org/user/Bob">
+    <ex:preferredTheme>Mystery</ex:preferredTheme>
+    <ex:readingLevel>Beginner</ex:readingLevel>
+    <ex:name>Bob</ex:name>
+  </ex:User>
 </rdf:RDF>

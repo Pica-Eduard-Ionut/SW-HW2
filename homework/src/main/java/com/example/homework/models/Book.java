@@ -8,6 +8,7 @@ public class Book {
     private String author;
     private List<String> themes;
     private String readingLevel;
+    private String id;
 
     public Book() {
         this.themes = new ArrayList<>();
@@ -55,5 +56,13 @@ public class Book {
     @Override
     public String toString() {
         return "Book{title='" + title + '\'' + ", author='" + author + '\'' + ", themes=" + themes + ", readingLevel='" + readingLevel + '\'' + '}';
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

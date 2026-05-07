@@ -6,49 +6,63 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Book Details</h1>
-    </header>
-    <nav>
-        <a href="index.html">Upload Data</a>
-        <a href="books.html">Books List</a>
-        <a href="graph.html">RDF Graph Viewer</a>
-    </nav>
-    <div class="container">
-        <button onclick="history.back()" style="margin-bottom: 20px;">← Back to Books</button>
-        <h2 id="book-title">Loading...</h2>
-        <div style="background: #f1f1f1; padding: 20px; border-radius: 5px;" id="details-container" style="display:none;">
-            <p><strong>Author:</strong> <span id="book-author">...</span></p>
-            <p><strong>Theme(s):</strong> <span id="book-theme">...</span></p>
-            <p><strong>Reading Level:</strong> <span id="book-level">...</span></p>
-        </div>
+
+<header>
+    <h1>Book Details</h1>
+</header>
+
+<nav>
+    <a href="index.html">Upload Data</a>
+    <a href="books.html">Books List</a>
+    <a href="graph.html">RDF Graph Viewer</a>
+</nav>
+
+<div class="container">
+
+    <button onclick="history.back()" style="margin-bottom:20px;">
+        ← Back to Books
+    </button>
+
+    <h2 id="book-title">Loading...</h2>
+
+    <div id="details-container"
+         style="background:#f1f1f1; padding:20px; border-radius:5px; display:none;">
+
+        <p><strong>Author:</strong> <span id="book-author"></span></p>
+
+        <p><strong>Theme(s):</strong> <span id="book-theme"></span></p>
+
+        <p><strong>Reading Level:</strong> <span id="book-level"></span></p>
+
     </div>
 
-    <script src="js/app.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookTitleId = urlParams.get('id');
+</div>
 
-            try {
-                const response = await fetch('/api/books');
-                const books = await response.json();
-                
-                const book = books.find(b => b.title === bookTitleId);
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const id = new URLSearchParams(window.location.search).get("id");
 
-                if(book) {
-                    document.getElementById('book-title').innerText = book.title;
-                    document.getElementById('book-author').innerText = book.author;
-                    document.getElementById('book-theme').innerText = book.themes.join(', ');
-                    document.getElementById('book-level').innerText = book.readingLevel;
-                } else {
-                    document.getElementById('book-title').innerText = "Book not found in database!";
-                }
-            } catch(error) {
-                console.error("Eroare la preluarea detaliilor:", error);
-                document.getElementById('book-title').innerText = "Error connecting to backend.";
+        try {
+            const res = await fetch('/api/books/details?id=' + encodeURIComponent(id));
+            const book = await res.json();
+
+            if (book && book.title) {
+                document.getElementById("book-title").innerText = book.title;
+                document.getElementById("book-author").innerText = book.author;
+                document.getElementById("book-level").innerText = book.readingLevel;
+
+                document.getElementById("book-theme").innerText =
+                    book.themes ? book.themes.join(", ") : "N/A";
+
+                document.getElementById("details-container").style.display = "block";
+            } else {
+                document.getElementById("book-title").innerText = "Book not found!";
             }
-        });
-    </script>
+        } catch (e) {
+            document.getElementById("book-title").innerText = "Error connecting to backend.";
+        }
+    });
+</script>
+
 </body>
 </html>

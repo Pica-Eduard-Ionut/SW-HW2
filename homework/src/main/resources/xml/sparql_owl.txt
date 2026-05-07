@@ -1,32 +1,36 @@
+PREFIX ex: <http://example.org/book-recommendation#>
+
 -- 1. Get all books
 SELECT ?title
 WHERE {
   ?book ex:title ?title .
-}
+};
 
 -- 2. Get all Science Fiction books
 SELECT ?title
 WHERE {
   ?book ex:title ?title .
-  ?book ex:theme "Science Fiction" .
-}
+  ?book ex:hasTheme ex:ScienceFiction .
+};
 
 -- 3. Get all Beginner books
 SELECT ?title
 WHERE {
   ?book ex:title ?title .
-  ?book ex:readingLevel "Beginner" .
-}
+  ?book ex:suitableFor ex:Beginner .
+};
 
 -- 4. Get all authors
-SELECT ?author
+SELECT ?authorName
 WHERE {
-  ?book ex:author ?author .
-}
+  ?book ex:writtenBy ?author .
+  ?author ex:name ?authorName .
+};
 
 -- 5. Get books and themes
-SELECT ?title ?theme
+SELECT ?title ?themeName
 WHERE {
   ?book ex:title ?title .
-  ?book ex:theme ?theme .
+  ?book ex:hasTheme ?theme .
+  ?theme ex:name ?themeName .
 }

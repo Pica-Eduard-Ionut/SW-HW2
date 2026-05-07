@@ -3,29 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <title>Books List</title>
+
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .add-form {
+            background: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .add-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .add-form button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .book-card button {
+            margin-right: 5px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
+
 <body>
-    <header>
-        <h1>Available Books</h1>
-    </header>
-    <nav>
-        <a href="index.html">Upload Data</a>
-        <a href="books.html">Books List</a>
-        <a href="graph.html">RDF Graph Viewer</a>
-    </nav>
-    <div class="container">
-        <h2>Browse Library</h2>
-        <div class="book-grid" id="book-grid">
-            <p>Loading books from backend...</p>
-        </div>
+
+<header>
+    <h1>Available Books</h1>
+</header>
+
+<nav>
+    <a href="index.html">Upload Data</a>
+    <a href="books.html">Books List</a>
+    <a href="graph.html">RDF Graph Viewer</a>
+</nav>
+
+<div class="container">
+
+    <h2>Add New Book</h2>
+
+    <div class="add-form">
+        <input type="text" id="new-title" placeholder="Book Title">
+        <input type="text" id="new-author" placeholder="Author">
+        <input type="text" id="new-level" placeholder="Reading Level">
+
+        <!-- ✅ ADDED FIELD -->
+        <input type="text" id="new-themes" placeholder="Themes (comma separated)">
+
+        <button onclick="addBook()">Add Book</button>
     </div>
 
-    <script src="js/app.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            loadBooks(); 
-        });
-    </script>
+    <h2>Browse Library</h2>
+
+    <div class="book-grid" id="book-grid">
+        <p>Loading books from backend...</p>
+    </div>
+
+</div>
+
+<script>
+
+    async function loadBooks() {
+
+        try {
+
+            const res = await fetch('/api/books');
+            const books = await res.json();
+
+            const grid = document.getElementById("book-grid");
+            grid.innerHTML = "";
+
+            books.forEach(book => {
+
+                const div = document.createElement("div");
+                div.className = "book-card";
+
+                div.innerHTML = `
+                    <h3>${book.title}</h3>
+                    <p><strong>Author:</strong> ${book.author}</p>
+                    <p><strong>Level:</strong> ${book.readingLevel}</p>
+
+                    <button class="view-btn">View</button>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                `;
+
+                div.querySelector(".view-btn").onclick = () => {
+                    window.location.href =
+                        "book-details.html?id=" + encodeURIComponent(book.id);
+                };
+
+                div.querySelector(".edit-btn").onclick = async () => {
+
+                    const newTitle = prompt("New title:", book.title);
+                    if (!newTitle) return;
+
+                    const newAuthor = prompt("New author:", book.author);
+                    if (!newAuthor) return;
+
+                    const newLevel = prompt("Reading level:", book.readingLevel);
+                    if (!newLevel) return;
+
+                    await fetch('/api/books?id=' + encodeURIComponent(book.id), {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            title: newTitle,
+                            author: newAuthor,
+                            readingLevel: newLevel
+                        })
+                    });
+
+                    loadBooks();
+                };
+
+                div.querySelector(".delete-btn").onclick = async () => {
+
+                    if (!confirm("Delete this book?")) return;
+
+                    await fetch('/api/books?id=' + encodeURIComponent(book.id), {
+                        method: 'DELETE'
+                    });
+
+                    loadBooks();
+                };
+
+                grid.appendChild(div);
+            });
+
+        } catch (e) {
+
+            document.getElementById("book-grid").innerText =
+                "Error loading books";
+        }
+    }
+
+    async function addBook() {
+
+        const title = document.getElementById("new-title").value.trim();
+        const author = document.getElementById("new-author").value.trim();
+        const level = document.getElementById("new-level").value.trim();
+
+        // ✅ NEW FIELD
+        const themesInput = document.getElementById("new-themes").value.trim();
+
+        if (!title || !author || !level) {
+            alert("Please fill all fields.");
+            return;
+        }
+
+        const themes = themesInput
+            ? themesInput.split(",").map(t => t.trim())
+            : [];
+
+        try {
+
+            await fetch('/api/books', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title,
+                    author,
+                    readingLevel: level,
+                    themes
+                })
+            });
+
+            document.getElementById("new-title").value = "";
+            document.getElementById("new-author").value = "";
+            document.getElementById("new-level").value = "";
+            document.getElementById("new-themes").value = "";
+
+            loadBooks();
+
+        } catch (e) {
+
+            alert("Error adding book.");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadBooks);
+
+</script>
+
 </body>
 </html>
