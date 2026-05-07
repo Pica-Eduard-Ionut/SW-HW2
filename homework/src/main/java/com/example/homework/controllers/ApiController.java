@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/api")
 public class ApiController {
 
-    // Endpoint-ul pentru a returna cărțile din RDF către frontend (Ex 4)
     @GetMapping("/books")
     public List<Book> getBooks() {
         List<Book> books = new ArrayList<>();
@@ -53,11 +52,9 @@ public class ApiController {
         return books;
     }
 
-    // Endpoint-ul pentru Upload RDF (Ex 3)
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            // Aici verificăm doar că a venit fișierul. Colegii de la backend vor adăuga logica de procesare Jena/salvare.
             System.out.println("Am primit fișierul cu succes: " + file.getOriginalFilename());
 
             return ResponseEntity.ok("Fișierul a fost primit de Spring Boot!");
