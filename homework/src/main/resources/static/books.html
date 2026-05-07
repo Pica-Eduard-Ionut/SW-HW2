@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Books List</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Available Books</h1>
+    </header>
+    <nav>
+        <a href="index.html">Upload Data</a>
+        <a href="books.html">Books List</a>
+        <a href="graph.html">RDF Graph Viewer</a>
+    </nav>
+    <div class="container">
+        <h2>Browse Library</h2>
+        <div class="book-grid" id="book-grid">
+            <p>Loading books from backend...</p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadBooks(); 
+        });
+    </script>
+</body>
+</html>
