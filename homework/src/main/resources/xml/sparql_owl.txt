@@ -1,0 +1,32 @@
+-- 1. Get all books
+SELECT ?title
+WHERE {
+  ?book ex:title ?title .
+}
+
+-- 2. Get all Science Fiction books
+SELECT ?title
+WHERE {
+  ?book ex:title ?title .
+  ?book ex:theme "Science Fiction" .
+}
+
+-- 3. Get all Beginner books
+SELECT ?title
+WHERE {
+  ?book ex:title ?title .
+  ?book ex:readingLevel "Beginner" .
+}
+
+-- 4. Get all authors
+SELECT ?author
+WHERE {
+  ?book ex:author ?author .
+}
+
+-- 5. Get books and themes
+SELECT ?title ?theme
+WHERE {
+  ?book ex:title ?title .
+  ?book ex:theme ?theme .
+}
