@@ -29,39 +29,56 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const startersContainer = document.getElementById('chat-starters');
-    let contextStarters = [];
 
     const path = window.location.pathname;
-    if (path.includes("index") || path === "/") {
-        contextStarters = ["How do I upload an RDF?", "What formats are supported?"];
-    } else if (path.includes("books")) {
-        contextStarters = ["Recommend a sci-fi book", "Sort books by author", "Find books for beginners"];
-    } else if (path.includes("graph")) {
-        contextStarters = ["What does this graph show?", "How are nodes connected?"];
-    } else {
-        contextStarters = ["Hello!", "Help me find a book"];
-    }
+    const params = new URLSearchParams(window.location.search);
+    let page = 'home';
+    if (path.includes('book-details')) page = 'bookDetail';
+    else if (path.includes('books')) page = 'books';
 
-    contextStarters.forEach(text => {
-        let btn = document.createElement('button');
-        btn.className = 'starter-btn';
-        btn.innerText = text;
-        btn.onclick = () => {
-            document.getElementById('chat-input').value = text;
-        };
-        startersContainer.appendChild(btn);
-    });
+    const bookId = params.get('id') || '';
+    const startersUrl = `/api/chat/starters?page=${page}&bookId=${encodeURIComponent(bookId)}`;
+
+    fetch(startersUrl)
+        .then(r => r.json())
+        .then(data => {
+            (data.starters || []).forEach(text => {
+                const btn = document.createElement('button');
+                btn.className = 'starter-btn';
+                btn.innerText = text;
+                btn.onclick = () => { document.getElementById('chat-input').value = text; };
+                startersContainer.appendChild(btn);
+            });
+        })
+        .catch(() => {});
 });
 
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById('chat-input');
     const log = document.getElementById('chat-log');
-    if (input.value.trim() !== "") {
-        log.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
-        log.innerHTML += `<p><strong>Bot:</strong> <i>(Backend integration pending)</i> I received your message!</p>`;
-        input.value = '';
-        document.getElementById('chatbot-messages').scrollTop = document.getElementById('chatbot-messages').scrollHeight;
+    const message = input.value.trim();
+    if (!message) return;
+
+    log.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+    input.value = '';
+
+    const params = new URLSearchParams(window.location.search);
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message,
+                pageContext: window.location.pathname,
+                bookId: params.get('id') || ''
+            })
+        });
+        const data = await res.json();
+        log.innerHTML += `<p><strong>Bot:</strong> ${data.reply || 'No response received.'}</p>`;
+    } catch (e) {
+        log.innerHTML += `<p><strong>Bot:</strong> Sorry, I could not connect to the server.</p>`;
     }
+    document.getElementById('chatbot-messages').scrollTop = document.getElementById('chatbot-messages').scrollHeight;
 }
 
 async function loadBooks() {

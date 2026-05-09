@@ -7,6 +7,8 @@
 
 **Group:** 1241 EA
 
+**GitHub Repository:** https://github.com/Pica-Eduard-Ionut/SW-HW2
+
 ---
 
 # Project Overview
@@ -43,11 +45,11 @@ The application allows users to manage books stored in RDF format, visualize RDF
 - Floating Chatbot Widget
 
 ## AI / RAG
-- ChromaDB / FAISS
-- OpenAI API or Google AI Studio
-- XML Chunking
-- Embeddings Generation
-- Semantic Search
+- Google AI Studio (Gemini) — LLM for chat responses
+- TF-IDF Vector Store (Java, in-memory) — document vectorization + cosine similarity search
+- RDF/XML chunking into book text documents
+- Retrieval-Augmented Generation (RAG) pipeline
+- Context-aware conversation starters
 
 ---
 
@@ -114,29 +116,27 @@ The application allows users to manage books stored in RDF format, visualize RDF
 ### Ontology + SPARQL + AI/RAG Chatbot
 
 ## Responsibilities
-- Created OWL ontology using Protégé
-- Exported ontology and GraphDB visualizations
-- Wrote SPARQL queries
-- Built vector database ingestion pipeline
-- Implemented embeddings generation
-- Integrated LLM APIs
-- Developed semantic retrieval and context injection
+- Built the OWL ontology in Protégé — classes, object properties, named individuals
+- Wrote the 5 SPARQL queries and ran them on the ontology
+- Implemented the RAG chatbot backend: books from RDF get chunked into text, vectorized with TF-IDF, and stored in-memory; incoming queries are matched via cosine similarity and the top results are injected as context into the Gemini prompt
+- Hooked up Google AI Studio (Gemini) as the LLM — auto-discovers the available model at startup
+- Made the chatbot starters dynamic and context-aware based on what page you're on
 
 ## Main Features Implemented
-- OWL ontology for recommendation system
-- Ontology classes and properties
-- SPARQL query examples
-- Vector database pipeline
-- Embedding generation workflow
-- RAG retrieval system
-- Semantic chatbot search by author/theme
+- OWL ontology with classes: Book, User, Author, Theme, ReadingLevel and object properties: hasTheme, suitableFor, writtenBy, prefersTheme, hasReadingLevel
+- 5 SPARQL queries executed on the ontology (see `sparql_owl.txt`)
+- `RagService.java` — reads books from RDF at startup, builds TF-IDF vocabulary, stores vectors in-memory, exposes cosine similarity search
+- `GoogleAiClient.java` — auto-discovers available Gemini model, calls generateContent API
+- `ChatController.java` — `POST /api/chat` (RAG-enhanced responses), `GET /api/chat/starters` (context-aware starters)
+- Semantic search by author and theme (e.g. "Frank Herbert + Science Fiction" → Dune)
+- Chatbot starters change based on current page (books list vs book detail vs home)
 
 ## Deliverables
-- `.owl` ontology file
-- GraphDB screenshots
+- `ontology.owl`
+- GraphDB/Protégé screenshots
 - `sparql_owl.txt`
-- Chatbot backend
-- Vector DB integration
+- `ChatController.java`, `RagService.java`, `GoogleAiClient.java`
+- `VectorEntry.java`, `ChatRequest.java`, `ChatResponse.java`
 
 ---
 
@@ -158,26 +158,30 @@ The application allows users to manage books stored in RDF format, visualize RDF
 # Project Structure
 
 ```bash
-project-root/
-│
-├── backend/
-│   ├── rdf/
-│   ├── services/
-│   ├── controllers/
-│   └── sparql/
-│
-├── frontend/
-│   ├── templates/
-│   ├── static/
-│   └── chatbot/
-│
-├── ontology/
-│   ├── library.owl
-│   └── sparql_owl.txt
-│
-├── rag/
-│   ├── embeddings/
-│   ├── vector-db/
-│   └── retrieval/
-│
-└── books.rdf
+homework/
+└── src/main/
+    ├── java/com/example/homework/
+    │   ├── controllers/
+    │   │   ├── ApiController.java       # Book CRUD endpoints
+    │   │   └── ChatController.java      # RAG chat endpoints
+    │   ├── services/
+    │   │   ├── BookService.java         # Jena RDF CRUD
+    │   │   ├── RagService.java          # TF-IDF vector store + retrieval
+    │   │   └── GoogleAiClient.java      # Gemini LLM integration
+    │   └── models/
+    │       ├── Book.java
+    │       ├── VectorEntry.java
+    │       ├── ChatRequest.java
+    │       └── ChatResponse.java
+    └── resources/
+        ├── static/
+        │   ├── index.html               # RDF upload page
+        │   ├── books.html               # Books list + add/edit
+        │   ├── book-details.html        # Book details page
+        │   ├── graph.html               # RDF graph visualization
+        │   └── js/app.js                # Frontend + chatbot widget
+        └── xml/
+            ├── books.rdf                # RDF/XML dataset
+            ├── ontology.owl             # OWL ontology
+            └── sparql_owl.txt           # 5 SPARQL queries
+```

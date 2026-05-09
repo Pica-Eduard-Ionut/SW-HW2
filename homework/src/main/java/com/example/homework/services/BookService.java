@@ -4,8 +4,8 @@ import com.example.homework.models.Book;
 import com.example.homework.models.BookRequest;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.util.FileManager;
 import org.apache.jena.vocabulary.RDF;
+import org.springframework.core.io.ClassPathResource;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,8 +19,12 @@ public class BookService {
 
     private Model loadModel() {
         Model model = ModelFactory.createDefaultModel();
-        InputStream in = FileManager.get().open(FILE);
-        if (in != null) model.read(in, null);
+        try {
+            InputStream in = new ClassPathResource("xml/books.rdf").getInputStream();
+            model.read(in, null);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load books.rdf", e);
+        }
         return model;
     }
 
