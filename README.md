@@ -9,6 +9,8 @@
 
 **GitHub Repository:** https://github.com/Pica-Eduard-Ionut/SW-HW2
 
+> **Note:** The Google AI Studio API key is not committed to the repository. It must be set as an environment variable `GOOGLE_AI_KEY` before running the application. In IntelliJ: Run → Edit Configurations → Environment variables → add `GOOGLE_AI_KEY=your_key_here`. The `.env.local` file (if used) is ignored by git.
+
 ---
 
 # Project Overview
