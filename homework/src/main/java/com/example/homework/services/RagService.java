@@ -6,7 +6,7 @@ import jakarta.annotation.PostConstruct;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.apache.jena.riot.RDFDataMgr;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,11 +21,25 @@ public class RagService {
     private List<String> vocabulary = new ArrayList<>();
     private final Map<String, Double> idf = new HashMap<>();
 
+    private String getRdfPath() {
+        if (BookService.activeRdfPath != null) return BookService.activeRdfPath;
+        java.net.URL url = getClass().getClassLoader().getResource("xml/books.rdf");
+        if (url == null) throw new RuntimeException("books.rdf not found on classpath");
+        return url.getPath().replace("/target/classes/", "/src/main/resources/");
+    }
+
     @PostConstruct
     public void init() {
+        rebuild();
+    }
+
+    public void rebuild() {
+        store.clear();
+        vocabulary.clear();
+        idf.clear();
         try {
             Model model = ModelFactory.createDefaultModel();
-            model.read(new ClassPathResource("xml/books.rdf").getInputStream(), null);
+            RDFDataMgr.read(model, getRdfPath());
 
             String queryStr = "PREFIX ex: <" + NS + "> " +
                 "SELECT ?s ?title ?author ?level ?theme WHERE { " +

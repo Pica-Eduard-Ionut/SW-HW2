@@ -6,12 +6,6 @@
     <ex:readingLevel>Intermediate</ex:readingLevel>
     <ex:name>Alice</ex:name>
   </ex:User>
-  <ex:Book rdf:about="http://example.org/book/2dea92b4-d156-4a11-b613-78eb45e9f641">
-    <ex:theme>c</ex:theme>
-    <ex:readingLevel>c</ex:readingLevel>
-    <ex:author>c</ex:author>
-    <ex:title>c</ex:title>
-  </ex:Book>
   <ex:Book rdf:about="http://example.org/book/HarryPotter">
     <ex:readingLevel>Beginner</ex:readingLevel>
     <ex:theme>Adventure</ex:theme>
@@ -44,11 +38,11 @@
     <ex:author>Alex Michaelides</ex:author>
     <ex:title>The Silent Patient</ex:title>
   </ex:Book>
-  <ex:Book rdf:about="http://example.org/book/82dd1af6-0765-4379-b565-3b4fa69cad61">
-    <ex:theme>a</ex:theme>
-    <ex:readingLevel>a</ex:readingLevel>
-    <ex:author>a</ex:author>
-    <ex:title>upload1</ex:title>
+  <ex:Book rdf:about="http://example.org/book/3627881c-3b5b-44ae-96d5-917bae5228a6">
+    <ex:theme>b</ex:theme>
+    <ex:readingLevel>b</ex:readingLevel>
+    <ex:author>upload2</ex:author>
+    <ex:title>upload2</ex:title>
   </ex:Book>
   <ex:User rdf:about="http://example.org/user/Bob">
     <ex:preferredTheme>Mystery</ex:preferredTheme>

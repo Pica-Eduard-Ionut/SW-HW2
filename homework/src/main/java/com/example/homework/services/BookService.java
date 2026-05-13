@@ -4,33 +4,44 @@ import com.example.homework.models.Book;
 import com.example.homework.models.BookRequest;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
-import org.springframework.core.io.ClassPathResource;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class BookService {
-    private static final String FILE = "src/main/resources/xml/books.rdf";
     private static final String NS = "http://example.org/book-recommendation#";
     private static final String BOOK_URI = "http://example.org/book/";
 
+    public static String activeRdfPath = null;
+
+    private String getRdfPath() {
+        if (activeRdfPath != null) return activeRdfPath;
+        URL url = getClass().getClassLoader().getResource("xml/books.rdf");
+        if (url == null) throw new RuntimeException("books.rdf not found on classpath");
+        return url.getPath().replace("/target/classes/", "/src/main/resources/");
+    }
+
+    private String getXmlDir() {
+        URL url = getClass().getClassLoader().getResource("xml/books.rdf");
+        if (url == null) throw new RuntimeException("xml dir not found");
+        return new java.io.File(url.getPath().replace("/target/classes/", "/src/main/resources/")).getParent();
+    }
+
     private Model loadModel() {
         Model model = ModelFactory.createDefaultModel();
-        try {
-            InputStream in = new ClassPathResource("xml/books.rdf").getInputStream();
-            model.read(in, null);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not load books.rdf", e);
-        }
+        RDFDataMgr.read(model, getRdfPath());
         return model;
     }
 
     private void saveModel(Model model) {
-        try (FileOutputStream out = new FileOutputStream(FILE)) {
-            model.write(out, "RDF/XML");
+        try (FileOutputStream out = new FileOutputStream(getRdfPath())) {
+            RDFDataMgr.write(out, model, Lang.RDFXML);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -152,6 +163,13 @@ public class BookService {
         }
 
         saveModel(model);
+    }
+
+    public void loadFromUpload(InputStream in, String filename) {
+        Model uploaded = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(uploaded, in, Lang.RDFXML);
+        activeRdfPath = getXmlDir() + java.io.File.separator + filename;
+        saveModel(uploaded);
     }
 
     public void deleteBook(String id) {
