@@ -84,6 +84,21 @@ public class RagService {
             System.out.println("[RagService] Vector store ready: " + store.size() + " entries");
             store.forEach(e -> System.out.println("  -> " + e.getText()));
 
+
+            if (!store.isEmpty()) {
+                VectorEntry first = store.get(0);
+                float[] vec = first.getEmbedding();
+                System.out.println("[RagService] Vector for: \"" + first.getText() + "\"");
+                System.out.println("[RagService] Vector dimension: " + vec.length);
+                System.out.print("[RagService] Non-zero entries (term=value): ");
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < vec.length; i++) {
+                    if (vec[i] > 0) sb.append(vocabulary.get(i)).append("=").append(String.format("%.4f", vec[i])).append(" ");
+                }
+                System.out.println(sb);
+                System.out.println("[RagService] Raw vector: " + Arrays.toString(vec));
+            }
+
         } catch (Exception e) {
             System.err.println("[RagService] Init failed: " + e.getMessage());
             e.printStackTrace();
